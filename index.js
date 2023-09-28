@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const urlShortnerRoutes = require('./urlShortnerRoutes');
 const app = express();
 
@@ -10,6 +11,8 @@ const port = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(morgan('dev'));
+app.use(bodyParser.json());
+
 app.use('/public', express.static(`${process.cwd()}/public`));
 
 app.get('/', function (req, res) {
