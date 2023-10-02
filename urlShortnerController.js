@@ -30,5 +30,13 @@ exports.shortenUrl = (req, res) => {
 
 // /api/shorturl/<short_url>, will return you to the original website
 exports.urlRedirection = (req, res) => {
-  return res.json({ message: 'hi' });
+  const short_url = req.params.shorturl;
+
+  const urlData = data.getData(short_url);
+
+  if (urlData) {
+    return res.status(404).json({ message: 'url not found' });
+  }
+
+  return res.status(200).json({ message: 'url found' });
 };
