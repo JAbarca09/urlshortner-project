@@ -16,7 +16,7 @@ exports.readData = (callback) => {
       callback(err);
     }
   });
-}
+};
 
 // TODO
 // Write a function that takes an object {original_url: x} and save it to the "backend"
@@ -31,9 +31,22 @@ exports.writeData = (newData, callback) => {
     }
 
     const urlData = JSON.parse(data);
+    const usedNumbers = new Set(urlData.map((entry) => entry.short_url)); // Create a set of existing short_urls
 
-    urlData.push(newData);
+    while (true) {
+      const min = 0;
+      const max = 999999;
+      const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+      const sixDigitNumber = randomNumber.toString().padStart(6, '0');
 
+      // Check if the generated number is unique
+      if (!usedNumbers.has(sixDigitNumber)) {
+        newData.short_url = sixDigitNumber; // Assign the unique number to newData
+        urlData.push(newData);
+        break;
+      }
+    }
+    
     fs.writeFile(
       dbFilePath,
       JSON.stringify(urlData, null, 2),
@@ -49,4 +62,3 @@ exports.writeData = (newData, callback) => {
     );
   });
 };
-
