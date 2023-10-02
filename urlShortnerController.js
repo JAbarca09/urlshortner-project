@@ -2,6 +2,7 @@
 // Invalid URL: { error: 'invalid url' }
 const dns = require('dns');
 const url = require('url');
+const data = require('./data');
 
 exports.shortenUrl = (req, res) => {
   const urlString = req.body.url;
@@ -15,9 +16,14 @@ exports.shortenUrl = (req, res) => {
       return res.status(400).json({ error: 'invalid url' });
     } else {
       console.log('Hostname is resolvable. IP Address:', address);
-      return res
-        .status(200)
-        .json({ original_url: urlString, short_url: 12345 });
+      const newData = { original_url: urlString };
+      data.writeData(newData, (writeErr, result) => {
+        if (writeErr) {
+          return res.status(500).json(writeErr);
+        }
+
+        return res.status(200).json(result);
+      });
     }
   });
 };
