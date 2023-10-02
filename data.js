@@ -46,7 +46,7 @@ exports.writeData = (newData, callback) => {
         break;
       }
     }
-    
+
     fs.writeFile(
       dbFilePath,
       JSON.stringify(urlData, null, 2),
@@ -60,5 +60,22 @@ exports.writeData = (newData, callback) => {
         callback(null, newData);
       }
     );
+  });
+};
+
+exports.getData = (short_url) => {
+  // get the url with the short url or nothing
+  fs.readFile(dbFilePath, 'utf-8', (readErr, data) => {
+    if (readErr) {
+      console.error('Error reading file:', readErr);
+      return;
+    }
+
+    const urlData = JSON.parse(data);
+    const dataMatch = urlData.find((item) => item.short_url === short_url);
+
+    console.log('Data match:', dataMatch);
+
+    return dataMatch;
   });
 };
