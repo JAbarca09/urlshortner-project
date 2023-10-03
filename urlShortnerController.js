@@ -1,19 +1,17 @@
 // EX Response: {"original_url":"https://www.youtube.com/watch?v=G0SXDqkMHZc&ab_channel=Vlad","short_url":17047}
 // Invalid URL: { error: 'invalid url' }
 const dns = require('dns');
-const url = require('url');
+const urlparser = require('url');
 const data = require('./data');
+
 
 exports.shortenUrl = (req, res) => {
   const urlString = req.body.url;
-  const parsedUrl = url.parse(urlString);
-
-  const hostname = parsedUrl.hostname;
-
-  dns.lookup(hostname, (err, address, family) => {
-    if (err) {
+  
+  dns.lookup(urlparser.parse(urlString).hostname, (err, address) => {
+    if (!address) {
       console.error('Hostname is not resolvable:', err);
-      return res.status(400).json({ error: 'invalid url' });
+      return res.json({ error: 'invalid url' });
     } else {
       console.log('Hostname is resolvable. IP Address:', address);
       const newData = { original_url: urlString };
