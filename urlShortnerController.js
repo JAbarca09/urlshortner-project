@@ -29,14 +29,14 @@ exports.shortenUrl = (req, res) => {
 };
 
 // /api/shorturl/<short_url>, will return you to the original website
-exports.urlRedirection = (req, res) => {
+exports.urlRedirection = async (req, res) => {
   const short_url = req.params.shorturl;
 
-  const urlData = data.getData(short_url);
-
-  if (urlData) {
+  const urlData = await data.getWebsite(short_url);
+  if (!urlData) {
     return res.status(404).json({ message: 'url not found' });
   }
 
+  // TODO Redirect the user to the original url
   return res.status(200).json({ message: 'url found' });
 };
