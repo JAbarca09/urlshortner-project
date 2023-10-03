@@ -37,6 +37,5 @@ exports.urlRedirection = async (req, res) => {
     return res.status(404).json({ message: 'url not found' });
   }
 
-  // TODO Redirect the user to the original url
-  return res.status(200).json({ message: 'url found' });
+  return res.redirect(301, urlData['original_url']);
 };
