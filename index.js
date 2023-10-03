@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const urlShortnerRoutes = require('./urlShortnerRoutes');
+const data = require('./data');
 const app = express();
 
 // Basic Configuration
@@ -22,6 +23,14 @@ app.get('/', function (req, res) {
 // Your first API endpoint
 app.get('/api/hello', function (req, res) {
   res.json({ greeting: 'hello API' });
+});
+
+data.readData((err, urlData) => {
+  if (err) {
+    console.error('Error reading data:', err);
+  } else {
+    console.log(urlData);
+  }
 });
 
 app.use('/api', urlShortnerRoutes);
