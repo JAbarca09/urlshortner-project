@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
 
 const dbFilePath = path.join(__dirname, 'urls.json');
 
@@ -17,10 +18,6 @@ exports.readData = (callback) => {
     }
   });
 };
-
-// TODO
-// Write a function that takes an object {original_url: x} and save it to the "backend"
-// Generate a random six digit unique number for the shorturl and save it to urls.json w/ function
 
 exports.writeData = (newData, callback) => {
   fs.readFile(dbFilePath, 'utf-8', (readErr, data) => {
@@ -63,19 +60,17 @@ exports.writeData = (newData, callback) => {
   });
 };
 
-exports.getData = (short_url) => {
-  // get the url with the short url or nothing
-  fs.readFile(dbFilePath, 'utf-8', (readErr, data) => {
-    if (readErr) {
-      console.error('Error reading file:', readErr);
-      return;
-    }
+exports.getWebsite = async (short_url) => {
+  // Promisify the fs.readFile function
+  const readFile = util.promisify(fs.readFile);
 
+  try {
+    const data = await readFile(dbFilePath, 'utf-8');
     const urlData = JSON.parse(data);
     const dataMatch = urlData.find((item) => item.short_url === short_url);
-
-    console.log('Data match:', dataMatch);
-
     return dataMatch;
-  });
+  } catch (error) {
+    console.error('Error reading file:', error);
+    return null; 
+  }
 };
